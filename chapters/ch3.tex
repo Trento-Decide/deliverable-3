@@ -1,0 +1,60 @@
+% !TeX spellcheck = it_IT
+\chapter{Dal class diagram alle API}
+
+\begin{table}[h]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.4}
+
+    \begin{tabularx}{\textwidth}{
+            @{}
+            l
+            >{\ttfamily}l
+            >{\ttfamily}l
+            >{\ttfamily}l
+            >{\ttfamily\raggedright\arraybackslash}X
+            >{\ttfamily\raggedright\arraybackslash}X
+            l
+            @{}
+        }
+
+        \toprule
+
+        \textbf{Classe} &
+        \multicolumn{1}{l}{\textbf{Metodo}} &
+        \multicolumn{1}{l}{\textbf{HTTP}} &
+        \multicolumn{1}{l}{\textbf{URI}} &
+        \multicolumn{1}{l}{\textbf{Request}} &
+        \multicolumn{1}{l}{\textbf{Response}} &
+        \textbf{Note} \\
+
+        \midrule
+
+        Utente
+        & metodo
+        & GET
+        & /api/v1/path
+        & \{ ... \}
+        & 200 OK
+        & Note \\
+
+        \addlinespace
+
+        & chiama\_api
+        & GET
+        & /api/v1/entità/id
+        &
+        \{ \par
+        \hspace{1em}parametro \par
+        \}
+        &
+        200 OK \par
+        Entità \{ \par
+        \hspace{1em}nome \par
+        \hspace{1em}altro \par
+        \}
+        & Note \\
+
+        \bottomrule
+    \end{tabularx}
+\end{table}

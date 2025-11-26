@@ -1,22 +1,101 @@
 % !TeX spellcheck = it_IT
 \chapter{Analisi dei componenti}
 
+\section*{Introduzione}
+Nel seguente capitolo viene presentata l'architettura in termini di componenti interni al sistema, essi sono definiti sulla base del Documento dei Requisiti.
+
 \section{Definizione dei componenti}
+In questa sezione si presenta in forma di linguaggio naturale la descrizione di ogni componente e delle proprie interfacce.
 
 {
     \renewcommand{\thesubsection}{CMP\arabic{subsection}}
 
-    \subsection{Componente}
+    \subsection{Gestione Login}
     \begin{description}
         \item[Descrizione] \hfill \\
-        desc
+        Il componente si occupa della funzionalità di accesso da parte di un qualsiasi utente al sistema. Include una pagina per login e logout.
+        Ogni utente è libero di scegliere tra due modalità di autenticazione: credenziali o SPID/CIE.
 
-        \item[Interfaccia richiesta - nome] \hfill \\
-        int
+        \item[Interfaccia richiesta - Credenziali di accesso] \hfill \\
+        Le credenziali includono email e password; sono richieste all'utente per l'accesso al sistema. 
+        
+        \item[Interfaccia richiesta - Ricorda sessione] \hfill \\
+        Ad ogni login sarà possibile per l'utente selezionare "ricordami" per permettergli di eseguire login automaticamente senza dover reinserire le credenziali.
+        
+        \item[Interfaccia richiesta - Autorizzazione autenticazione SPID/CIE] \hfill \\
+        Autorizzazione all'accesso al sistema proveniente dalla CIE o Provider SPID, agenti come garanti della validità e correttezza dell'identità del soggetto.
+        
+        \item[Interfaccia richiesta - Dati utente] \hfill \\
+        Il componente richiede, per la comparazione dei dati inseriti con quelli presenti nel sistema, i dati associati all' utente.
 
-        \item[Interfaccia fornita - nome] \hfill \\
-        int
+        \item[Interfaccia fornita - Richiesta autenticazione SPID/CIE] \hfill \\
+        Indirizzamento dell'utente presso il Provider richiesto per l'autenticazione.
+        
     \end{description}
+    
+     \subsection{Gestione Registrazione}
+    \begin{description}
+    	\item[Descrizione] \hfill \\
+    	Il componente si occupa di gestire l'inserimento e la validazione delle informazioni relative ad una nuova registrazione di un utente. L'utente fornirà: la propria identità SPID/CIE, credenziali, username e la preferenza sulla ricezione delle notifiche.
+    	    	
+    	\item[Interfaccia richiesta - Dati registrazione] \hfill \\
+		I dati personali dell'utente comprendono: nome e cognome, email, password, username e consenso alle notifiche.
+		
+		\item[Interfaccia richiesta - Residenza da ANPR] \hfill \\
+		Viene richiesto ad ANPR il comune di residenza dell'utente.
+    	
+        \item[Interfaccia richiesta - Autorizzazione autenticazione SPID/CIE] \hfill \\
+		Autorizzazione all'accesso al sistema proveniente dalla CIE o Provider SPID, agenti come garanti della validità e correttezza dell'identità del soggetto.
+		
+		\item[Interfaccia richiesta - Verifica email utente] \hfill \\
+		L'utente alla creazione del proprio account riceve una email di verifica che deve accettare, se il componente registrazione riceve la verifica avvenuta, il processo di registrazione è terminato.
+    	
+    	\item[Interfaccia fornita - Richiesta autenticazione SPID/CIE] \hfill \\
+    	Indirizzamento dell'utente presso il Provider richiesto per l'autenticazione.
+    	
+    	\item[Interfaccia fornita - Richiesta residenza attraverso ANPR] \hfill \\
+    	Vengono inoltrati ad ANPR i dati sull'identità (presi da SPID/CIE) del nuovo utente in fase di registrazione.
+    	
+    	\item[Interfaccia fornita - Dati nuovo utente] \hfill \\
+    	Al termine del processo di registrazione vengono inviati al database tutti i dati utili al sistema riguardo il nuovo registrato: credenziali, username, nome e cognome e registrerà la preferenza sulla ricezione delle notifiche.
+   
+   		\item[Interfaccia fornita - Email utente] \hfill \\
+		Il componente di registrazione fornisce la email al componente "Gestione invio email", per l'invio al nuovo utente della email di verifica.
+   
+    \end{description}
+    
+         \subsection{Gestione Dati}
+    \begin{description}
+    	\item[Descrizione] \hfill \\
+    	Il componente si occupa del collezionamento e lavorazione dei dati provenienti dal componente database. Fornisce l'accesso ai dati alla dashboard amministrativa, oltre ad esporre parte dei dati all'esterno.
+    	
+    	\item[Interfaccia richiesta - Dati su votazioni, distribuzioni e sistema] \hfill \\
+		Vengono richiesti dal database sulle votazioni, distribuzioni territoriali dei votanti e dati generici di sistema.
+    	
+    	\item[Interfaccia fornita - Dati sulle distribuzioni territoriali] \hfill \\
+    	Vengono esposti esternamente dati in forma raffinata riguardanti le distribuzioni territoriali degli utenti del sistema.
+    	
+    	\item[Interfaccia fornita - Dati sulle votazioni] \hfill \\
+		Vengono esposti esternamente dati in forma raffinata riguardanti le votazioni.
+
+		\item[Interfaccia fornita - Dati sulle votazioni] \hfill \\
+		Vengono forniti all'amministrazione dati in forma raffinata riguardanti l'intero sistema.
+
+    \end{description}
+    
+             \subsection{Componente}
+    \begin{description}
+    	\item[Descrizione] \hfill \\
+    	desc
+    	
+    	\item[Interfaccia richiesta - nome] \hfill \\
+    	int
+    	
+    	\item[Interfaccia fornita - nome] \hfill \\
+    	int
+    \end{description}
+    
 }
 
 \section{Diagramma dei componenti}
+Si riporta in seguito il diagramma contenente tutti i componenti del sistema \emph{Trento Decide} e delle loro interconnessioni.

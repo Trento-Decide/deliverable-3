@@ -2,26 +2,22 @@
 \documentclass[a4paper]{report}
 
 \usepackage[a4paper, margin=2.5cm]{geometry}
-
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[italian]{babel}
-\usepackage{fancyhdr}
-\usepackage{array}
+
+\usepackage{graphicx}
 \usepackage{xcolor}
-\usepackage{tocloft}
-\usepackage{booktabs}
+\usepackage{array}
 \usepackage{tabularx}
-\usepackage{makecell}
+\usepackage{booktabs}
 
-\newlength{\originalsecnumwidth}
-\setlength{\originalsecnumwidth}{\cftsecnumwidth}
-
-\newlength{\originalsubsecnumwidth}
-\setlength{\originalsubsecnumwidth}{\cftsubsecnumwidth}
-
-\definecolor{trentogreen}{RGB}{0, 122, 82}
-\definecolor{grayline}{RGB}{200, 200, 200}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Documento di Design}
+\lhead{Trento Decide}
+\cfoot{\thepage}
 
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
@@ -33,28 +29,6 @@
   citecolor=blue,
   urlcolor=blue
 }
-\pagestyle{fancy}
-\fancyhf{}
-\rhead{Documento di Design}
-\lhead{Trento Decide}
-\cfoot{\thepage}
-
-\usepackage{graphicx}
-
-\newcommand{\defref}[1]{(def.~\ref{#1})}
-
-\newcounter{definition}
-\renewcommand{\thedefinition}{\arabic{definition}}
-
-\newcounter{rfsection}
-\setcounter{rfsection}{1}
-
-\newcounter{ucsection}
-\setcounter{ucsection}{1}
-
-\renewcommand{\bibname}{Bibliografia e Sitografia}
-
-\usepackage{etoc}
 
 \begin{document}
 
@@ -98,8 +72,6 @@ Università di Trento
 \pagenumbering{arabic}
 \tableofcontents
 \newpage
-
-\etocsettocstyle{}{}
 
 \include{chapters/ch1}
 \include{chapters/ch2}

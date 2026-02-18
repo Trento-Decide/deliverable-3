@@ -12,6 +12,18 @@
 \usepackage{tabularx}
 \usepackage{booktabs}
 
+\usepackage{tocloft}
+
+\newlength{\originalsubsecnumwidth}
+\setlength{\originalsubsecnumwidth}{\cftsubsecnumwidth}
+
+\newenvironment{cmpscope}{
+  \renewcommand{\thesubsection}{\textbf{CMP\arabic{subsection}}}
+  \addtocontents{toc}{\protect\setlength{\cftsubsecnumwidth}{4.3em}}
+}{
+  \addtocontents{toc}{\protect\setlength{\cftsubsecnumwidth}{\originalsubsecnumwidth}}
+}
+
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}

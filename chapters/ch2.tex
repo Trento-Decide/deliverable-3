@@ -1,9 +1,57 @@
 % !TeX spellcheck = it_IT
 \chapter{Diagramma delle classi}
 
-\section{Classe}
+\section{Utente}
 
-Descrizione
+Interfaccia generale per ogni tipo di utente della piattaforma, contiene le credenziali e i metodi per cambiarle.
+
+\section{Cittadino}
+
+Implementa Utente, contiene le funzionalità per gestire le proposte proprie e interagire con quelle di terzi. Inoltre, un cittadino può eliminare il proprio profilo.
+
+\section{Associazione}
+
+Estende Cittadino con la possibilità di esprimere e rimuovere endorsement.
+
+\section{Moderatore}
+
+Implementa Utente, contiene le funzioni per gestire la coda di moderazione ed eliminare contenuti inappropriati.
+
+\section{Amministratore}
+
+Implementa Utente, consente di creare Associazioni e Moderatori, modificare lo stato di una proposta e scaricare il report dei dati di sistema.
+
+\section{Campi}
+
+Interfaccia con campi basilari.
+
+\section{Votabile}
+
+Un elemento generico che tiene traccia dei propri voti.
+
+\section{BozzaProposta}
+
+Implementa campi, aggiunge informazioni su autore e luogo.
+
+\section{Proposta}
+
+Implementa Votabile, aggiunge stato, versioni e proposte di modifica in attesa di essere valutate.
+
+\section{QuesitoSondaggio}
+
+Implementa Votabile, aggiunge il testo.
+
+\section{Sondaggio}
+
+Implementa campi, aggiunge il periodo di validità e i propri quesiti.
+
+\section{Attività}
+
+Contiene il nome dell'azione compiuta e il timestamp di essa.
+
+\section{Registrazione}
+
+Contiene i dati inseriti durante la registrazione e le funzionalità per verificare che il cittadino sia di Trento, inviare la mail di conferma e infine creare il cittadino.
 
 \begin{center}
     % \includegraphics[scale=1]{img/classi/classe.png}
@@ -12,5 +60,5 @@ Descrizione
 \section{Diagramma delle classi complessivo}
 
 \begin{center}
-    % \includegraphics[scale=1]{img/classi/complessivo.png}
+    \includegraphics[scale=.45]{img/classi/completo.png}
 \end{center}

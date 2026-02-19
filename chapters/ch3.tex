@@ -1,60 +1,271 @@
 % !TeX spellcheck = it_IT
 \chapter{Dal class diagram alle API}
 
-\begin{table}[h]
-    \centering
-    \small
-    \renewcommand{\arraystretch}{1.4}
+\footnotesize
+\renewcommand{\arraystretch}{1.4}
 
-    \begin{tabularx}{\textwidth}{
-            @{}
-            l
-            >{\ttfamily}l
-            >{\ttfamily}l
-            >{\ttfamily}l
-            >{\ttfamily\raggedright\arraybackslash}X
-            >{\ttfamily\raggedright\arraybackslash}X
-            l
-            @{}
-        }
+\begin{xltabular}{\textwidth}{
+        @{}
+        >{\ttfamily}l
+        >{\ttfamily}l
+        >{\ttfamily}l
+        >{\ttfamily\raggedright\arraybackslash}l
+        >{\ttfamily\raggedright\arraybackslash}X
+        >{\ttfamily\raggedright\arraybackslash}X
+        @{}
+    }
 
-        \toprule
+    \toprule
 
-        \textbf{Classe} &
-        \multicolumn{1}{l}{\textbf{Metodo}} &
-        \multicolumn{1}{l}{\textbf{HTTP}} &
-        \multicolumn{1}{l}{\textbf{URI}} &
-        \multicolumn{1}{l}{\textbf{Request}} &
-        \multicolumn{1}{l}{\textbf{Response}} &
-        \textbf{Note} \\
+    \multicolumn{1}{l}{\textbf{Classe}} &
+    \multicolumn{1}{l}{\textbf{Metodo}} &
+    \multicolumn{1}{l}{\textbf{HTTP}} &
+    \multicolumn{1}{l}{\textbf{URI}} &
+    \multicolumn{1}{l}{\textbf{Request}} &
+    \multicolumn{1}{l}{\textbf{Response}} \\
 
-        \midrule
+    \midrule
+    \endfirsthead
 
-        Utente
-        & metodo
-        & GET
-        & /api/v1/path
-        & \{ ... \}
-        & 200 OK
-        & Note \\
+    \toprule
 
-        \addlinespace
+    \multicolumn{1}{l}{\textbf{Classe}} &
+    \multicolumn{1}{l}{\textbf{Metodo}} &
+    \multicolumn{1}{l}{\textbf{HTTP}} &
+    \multicolumn{1}{l}{\textbf{URI}} &
+    \multicolumn{1}{l}{\textbf{Request}} &
+    \multicolumn{1}{l}{\textbf{Response}} \\
 
-        & chiama\_api
-        & GET
-        & /api/v1/entità/id
-        &
-        \{ \par
-        \hspace{1em}parametro \par
-        \}
-        &
-        200 OK \par
-        Entità \{ \par
-        \hspace{1em}nome \par
-        \hspace{1em}altro \par
-        \}
-        & Note \\
+    \midrule
+    \endhead
 
-        \bottomrule
-    \end{tabularx}
-\end{table}
+    \bottomrule
+    \endfoot
+
+    %% ── Utente ──────────────────────────────────────────────
+
+    Utente
+    & registrazione
+    & POST
+    & /auth/register
+    & \{ username, email, password, email\_opt\_in \}
+    & 201 \{ message \} \\
+
+    \addlinespace
+
+    & login
+    & POST
+    & /auth/login
+    & \{ email, password \}
+    & 200 \{ access\_token, user \} \\
+
+    \addlinespace
+
+    & get\_provider
+    & GET
+    & /auth/provider
+    &
+    & 200 \{ provider\_token \} \\
+
+    \addlinespace
+
+    & elimina\_profilo
+    & DELETE
+    & /utente
+    &
+    & 204 No Content \\
+
+    \midrule
+
+    %% ── Proposta ────────────────────────────────────────────
+
+    Proposta
+    & crea\_bozza
+    & POST
+    & /proposte/bozza
+    & \{ title, description, category\_id, additional\_data \}
+    & 201 \{ id \} \\
+
+    \addlinespace
+
+    & modifica\_bozza
+    & PATCH
+    & /proposte/:id
+    & \{ title?, description?, category\_id?, additional\_data? \}
+    & 200 \{ \} \\
+
+    \addlinespace
+
+    & pubblica
+    & POST
+    & /proposte/:id/pubblica
+    &
+    & 200 \{ \} \\
+
+    \addlinespace
+
+    & aggiorna\_pubblicata
+    & PUT
+    & /proposte/:id
+    & \{ title, description, category\_id, additional\_data \}
+    & 200 \{ \} \\
+
+    \addlinespace
+
+    & get\_proposte
+    & GET
+    & /proposte
+    &
+    & 200 [ ProposalSearchItem ] \\
+
+    \addlinespace
+
+    & get\_proposta
+    & GET
+    & /proposte/:id
+    &
+    & 200 Proposal \\
+
+    \addlinespace
+
+    & elimina\_proposta
+    & DELETE
+    & /proposte/:id
+    &
+    & 204 No Content \\
+
+    \addlinespace
+
+    & vota
+    & POST
+    & /proposte/:id/vota
+    & \{ vote \}
+    & 200 \{ vote, total\_votes \} \\
+
+    \addlinespace
+
+    & rimuovi\_voto
+    & DELETE
+    & /proposte/:id/vota
+    &
+    & 200 \{ total\_votes \} \\
+
+    \addlinespace
+
+    & get\_voto\_utente
+    & GET
+    & /proposte/:id/vota
+    &
+    & 200 \{ vote \} \\
+
+    \addlinespace
+
+    & aggiungi\_preferito
+    & POST
+    & /proposte/:id/preferisco
+    &
+    & 200 \{ is\_favourited: true \} \\
+
+    \addlinespace
+
+    & rimuovi\_preferito
+    & DELETE
+    & /proposte/:id/preferisco
+    &
+    & 200 \{ is\_favourited: false \} \\
+
+    \addlinespace
+
+    & is\_preferito
+    & GET
+    & /proposte/:id/preferisco
+    &
+    & 200 \{ is\_favourited \} \\
+
+    \midrule
+
+    %% ── Sondaggio ───────────────────────────────────────────
+
+    Sondaggio
+    & crea\_sondaggio
+    & POST
+    & /sondaggi
+    & \{ title, description?, category\_id?, expires\_at?, is\_active?, questions \}
+    & 201 \{ success, poll\_id \} \\
+
+    \addlinespace
+
+    & get\_sondaggi
+    & GET
+    & /sondaggi
+    &
+    & 200 [ PollSearchItem ] \\
+
+    \addlinespace
+
+    & get\_sondaggio
+    & GET
+    & /sondaggi/:id
+    &
+    & 200 \{ data: Poll, user\_has\_voted \} \\
+
+    \addlinespace
+
+    & vota
+    & POST
+    & /sondaggi/:id/vota
+    & \{ question\_id, selected\_option\_id?, text\_response? \}
+    & 200 \{ success \} \\
+
+    \midrule
+
+    %% ── Ricerca ─────────────────────────────────────────────
+
+    Ricerca
+    & cerca
+    & GET
+    & /cerca
+    &
+    & 200 \{ data: [GlobalSearchItem] \} \\
+
+    \midrule
+
+    %% ── Categoria ───────────────────────────────────────────
+
+    Categoria
+    & get\_categorie
+    & GET
+    & /config/categories
+    &
+    & 200 \{ data: [Category] \} \\
+
+    \addlinespace
+
+    & get\_form\_schema
+    & GET
+    & /config/categories/:id/form
+    &
+    & 200 \{ data: [FormField] \} \\
+
+    \addlinespace
+
+    & get\_stati
+    & GET
+    & /config/statuses
+    &
+    & 200 \{ data: [Status] \} \\
+
+    \midrule
+
+    %% ── Dashboard ───────────────────────────────────────────
+
+    Dashboard
+    & get\_statistiche
+    & GET
+    & /dashboard/stats
+    &
+    & 200 DashboardStats \\
+
+\end{xltabular}
+
+\normalsize

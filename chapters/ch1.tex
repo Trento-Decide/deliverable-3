@@ -7,10 +7,9 @@ Nel seguente capitolo viene presentata l'architettura in termini di componenti i
 \section{Definizione dei componenti}
 In questa sezione si presenta in forma di linguaggio naturale la descrizione di ogni componente e delle proprie interfacce.
 
-{
-    \renewcommand{\thesubsection}{CMP\arabic{subsection}}
+\begin{cmpscope}
 
-    \subsection{Gestione Login}
+    \subsection{Gestione Login} \label{cmp:gestione-login}
     \begin{description}
         \item[Descrizione] \hfill \\
         Il componente si occupa della funzionalità di accesso da parte di un qualsiasi utente al sistema. Include una pagina per login e logout.
@@ -26,76 +25,366 @@ In questa sezione si presenta in forma di linguaggio naturale la descrizione di 
         Autorizzazione all'accesso al sistema proveniente dalla CIE o Provider SPID, agenti come garanti della validità e correttezza dell'identità del soggetto.
         
         \item[Interfaccia richiesta - Dati utente] \hfill \\
-        Il componente richiede, per la comparazione dei dati inseriti con quelli presenti nel sistema, i dati associati all' utente.
+        Il componente richiede, per la comparazione dei dati inseriti con quelli presenti nel sistema, i dati associati all'utente.
 
         \item[Interfaccia fornita - Richiesta autenticazione SPID/CIE] \hfill \\
         Indirizzamento dell'utente presso il Provider richiesto per l'autenticazione.
         
+        \item[Interfaccia fornita - Autenticazione] \hfill \\
+        Fornisce agli altri componenti del sistema la conferma che l'utente corrente è autenticato e autorizzato a compiere azioni.
     \end{description}
     
-     \subsection{Gestione Registrazione}
+     \subsection{Gestione Registrazione} \label{cmp:gestione-registrazione}
     \begin{description}
-    	\item[Descrizione] \hfill \\
-    	Il componente si occupa di gestire l'inserimento e la validazione delle informazioni relative ad una nuova registrazione di un utente. L'utente fornirà: la propria identità SPID/CIE, credenziali, username e la preferenza sulla ricezione delle notifiche.
-    	    	
-    	\item[Interfaccia richiesta - Dati registrazione] \hfill \\
-		I dati personali dell'utente comprendono: nome e cognome, email, password, username e consenso alle notifiche.
-		
-		\item[Interfaccia richiesta - Residenza da ANPR] \hfill \\
-		Viene richiesto ad ANPR il comune di residenza dell'utente.
-    	
+        \item[Descrizione] \hfill \\
+        Il componente si occupa di gestire l'inserimento e la validazione delle informazioni relative ad una nuova registrazione di un utente. L'utente fornirà: la propria identità SPID/CIE, credenziali, username e la preferenza sulla ricezione delle notifiche.
+                
+        \item[Interfaccia richiesta - Dati registrazione] \hfill \\
+        I dati personali dell'utente comprendono: nome e cognome, email, password, username e consenso alle notifiche.
+        
+        \item[Interfaccia richiesta - Residenza da ANPR] \hfill \\
+        Viene richiesto ad ANPR il comune di residenza dell'utente.
+        
         \item[Interfaccia richiesta - Autorizzazione autenticazione SPID/CIE] \hfill \\
-		Autorizzazione all'accesso al sistema proveniente dalla CIE o Provider SPID, agenti come garanti della validità e correttezza dell'identità del soggetto.
+        Autorizzazione all'accesso al sistema proveniente dalla CIE o Provider SPID.
+        
+        \item[Interfaccia richiesta - Verifica email utente] \hfill \\
+        Il componente attende la conferma dell'avvenuta verifica dell'indirizzo email (gestita dal componente Gestione Invio Email [\ref{cmp:gestione-invio-email}]) per finalizzare la registrazione.
+        
+        \item[Interfaccia fornita - Richiesta autenticazione SPID/CIE] \hfill \\
+        Indirizzamento dell'utente presso il Provider richiesto per l'autenticazione.
+        
+        \item[Interfaccia fornita - Richiesta residenza attraverso ANPR] \hfill \\
+        Vengono inoltrati ad ANPR i dati sull'identità (presi da SPID/CIE) del nuovo utente in fase di registrazione.
+        
+        \item[Interfaccia fornita - Dati nuovo utente] \hfill \\
+        Al termine del processo di registrazione vengono inviati al database tutti i dati utili al sistema riguardo il nuovo registrato: credenziali, username, nome e cognome e registrerà la preferenza sulla ricezione delle notifiche.
+   
+        \item[Interfaccia fornita - Email utente] \hfill \\
+        Il componente fornisce l'indirizzo email al componente Gestione Invio Email (\ref{cmp:gestione-invio-email}), per l'inoltro del link di verifica.
+    \end{description}
+    
+     \subsection{Gestione Dati} \label{cmp:gestione-dati}
+    \begin{description}
+        \item[Descrizione] \hfill \\
+        Il componente si occupa del collezionamento, aggregazione e lavorazione dei dati provenienti dal database. Fornisce l'accesso ai dati alla Dashboard Amministrativa (\ref{cmp:dashboard-amministrativa}), oltre ad esporre parte dei dati all'esterno.
+        
+        \item[Interfaccia richiesta - Dati su votazioni, distribuzioni e sistema] \hfill \\
+        Vengono richiesti al database i dati grezzi su voti, pdistribuzioni territoriali dei votanti e metriche di sistema.
+        
+        \item[Interfaccia fornita - Dati sulle distribuzioni territoriali] \hfill \\
+        Vengono esposti esternamente dati raffinati riguardanti la distribuzione territoriale degli utenti.
+        
+        \item[Interfaccia fornita - Dati sulle votazioni] \hfill \\
+        Vengono esposti esternamente dati aggregati riguardanti le votazioni.
+
+        \item[Interfaccia fornita - Report dati sul sistema] \hfill \\
+        Vengono forniti alla Dashboard Amministrativa (\ref{cmp:dashboard-amministrativa}) report completi e dettagliati sull'utilizzo della piattaforma.
+    \end{description}
+    
+     \subsection{Gestione Dati Personali} \label{cmp:gestione-dati-personali}
+    \begin{description}
+        \item[Descrizione] \hfill \\
+        Il componente permette all'utente autenticato di visualizzare e modificare i propri dati personali, come email, password e preferenze di notifica.
+        
+        \item[Interfaccia richiesta - Modifiche dei dati] \hfill \\
+        Input dell'utente contenente i nuovi valori per email, password, username e preferenze ricezione email.
+        
+        \item[Interfaccia fornita - Avvenuta modifica di email o password] \hfill \\
+        Trigger inviato al componente Gestione Invio Email (\ref{cmp:gestione-invio-email}) per notificare l'utente che i suoi dati di sicurezza sono cambiati.
+        
+        \item[Interfaccia fornita - Dati modificati] \hfill \\
+        Le variazioni confermate dei dati personali vengono inviate al database.
+    \end{description}
+
+     \subsection{Gestione invio email} \label{cmp:gestione-invio-email}
+    \begin{description}
+        \item[Descrizione] \hfill \\
+        Il componente centralizza l'invio di comunicazioni via posta elettronica verso gli utenti e gli amministratori (notifiche, verifiche, credenziali).
+        
+        \item[Interfaccia richiesta - Email utente] \hfill \\
+        Riceve l'indirizzo del destinatario dal componente di Gestione Registrazioni.
+        
+        \item[Interfaccia richiesta - Avvenuta modifica di email o password] \hfill \\
+        Riceve il segnale di modifica dei dati sensibili per inviare l'avviso di sicurezza all'utente.
+        
+        \item[Interfaccia richiesta - Contenuto notifica] \hfill \\
+        Riceve il payload del messaggio (oggetto e corpo) dal componente Gestione Notifiche (\ref{cmp:gestione-notifiche}).
+        
+        \item[Interfaccia richiesta - Credenziali utente moderatore o associazione] \hfill \\
+        Riceve dalla Dashboard Amministrativa (\ref{cmp:dashboard-amministrativa}) le credenziali generate per i nuovi account speciali da inviare ai rispettivi proprietari.
+        
+        \item[Interfaccia fornita - Verifica email utente] \hfill \\
+        Fornisce al componente di registrazione la conferma che l'utente ha cliccato sul link di verifica inviato via email.
+        
+        \item[Interfaccia fornita - Contenuto email] \hfill \\
+        L'effettivo invio del messaggio email verso il server SMTP o il client dell'utente.
+    \end{description}
+    
+     \subsection{Gestione Preferiti} \label{cmp:gestione-preferiti}
+    \begin{description}
+        \item[Descrizione] \hfill \\
+        Il componente gestisce la lista degli elementi seguiti dall'utente e monitora gli aggiornamenti relativi ad esse per generare notifiche.
+        
+        \item[Interfaccia richiesta - Nuovo preferito] \hfill \\
+        Riceve dal componente Gestione Proposte Pubbliche (\ref{cmp:gestione-proposte-pubbliche}) l'indicazione che un utente ha aggiunto una proposta ai preferiti.
+
+        \item[Interfaccia fornita - Oggetto di notifica] \hfill \\
+        Quando un elemento tra i preferiti subisce variazioni, viene creato un oggetto di notifica inoltrato al componente Gestione Notifiche (\ref{cmp:gestione-notifiche}).
+    \end{description}
+
+     \subsection{Gestione Notifiche} \label{cmp:gestione-notifiche}
+    \begin{description}
+        \item[Descrizione] \hfill \\
+        Il componente orchestra il sistema di avvisi, filtrando le comunicazioni in base alle preferenze espresse dall'utente.
+        
+        \item[Interfaccia richiesta - Oggetto di notifica] \hfill \\
+        Riceve aggiornamenti da notificare.
+        
+        \item[Interfaccia richiesta - Permessi di notifica] \hfill \\
+        Verifica le preferenze dell'utente (ricevute dal componente registrazione (\ref{cmp:gestione-registrazione}) / profilo (\ref{cmp:modifica-dati-personali})) per decidere se inviare o meno l'email.
+
+        \item[Interfaccia fornita - Contenuto notifica] \hfill \\
+        Se le preferenze lo consentono, inoltra il contenuto formattato al componente Gestione Invio Email (\ref{cmp:gestione-invio-email}).
+    \end{description}
+
+     \subsection{Gestione Database} \label{cmp:gestione-database}
+    \begin{description}
+        \item[Descrizione] \hfill \\
+        Componente di persistenza che gestisce tutte le operazioni di lettura e scrittura (CRUD) sui dati del sistema.
+        
+        \item[Interfaccia richiesta - Dati modificati] \hfill \\
+        Riceve aggiornamenti sui dati utente da salvare.
+        
+        \item[Interfaccia richiesta - Dati nuovo utente] \hfill \\
+        Riceve i dati dei nuovi utenti registrati.
+
+		\item[Interfaccai richiesta - Modifiche ai dati] \hfill \\
+		Riceve dal componente Gestione Modifica Dati Personali (\ref{cmp:modifica-dati-personali}) le modifiche apportate per poterle salvare nel database.
+        
+        \item[Interfaccia richiesta - Dati account moderatore e associazione] \hfill \\
+        Riceve le credenziali generate per gli account speciali dalla Dashboard Amministrativa (\ref{cmp:dashboard-amministrativa}) per poterle salvare.
+        
+        \item[Interfaccia richiesta - Registrazione sondaggio] \hfill \\
+        Salva i nuovi sondaggi creati dall'amministrazione.
+        
+        \item[Interfaccia richiesta - Registrazione modifiche] \hfill \\
+        Salva le modifiche apportate alle proposte esistenti.
 		
-		\item[Interfaccia richiesta - Verifica email utente] \hfill \\
-		L'utente alla creazione del proprio account riceve una email di verifica che deve accettare, se il componente registrazione riceve la verifica avvenuta, il processo di registrazione è terminato.
-    	
-    	\item[Interfaccia fornita - Richiesta autenticazione SPID/CIE] \hfill \\
-    	Indirizzamento dell'utente presso il Provider richiesto per l'autenticazione.
-    	
-    	\item[Interfaccia fornita - Richiesta residenza attraverso ANPR] \hfill \\
-    	Vengono inoltrati ad ANPR i dati sull'identità (presi da SPID/CIE) del nuovo utente in fase di registrazione.
-    	
-    	\item[Interfaccia fornita - Dati nuovo utente] \hfill \\
-    	Al termine del processo di registrazione vengono inviati al database tutti i dati utili al sistema riguardo il nuovo registrato: credenziali, username, nome e cognome e registrerà la preferenza sulla ricezione delle notifiche.
-   
-   		\item[Interfaccia fornita - Email utente] \hfill \\
-		Il componente di registrazione fornisce la email al componente "Gestione invio email", per l'invio al nuovo utente della email di verifica.
-   
-    \end{description}
-    
-         \subsection{Gestione Dati}
-    \begin{description}
-    	\item[Descrizione] \hfill \\
-    	Il componente si occupa del collezionamento e lavorazione dei dati provenienti dal componente database. Fornisce l'accesso ai dati alla dashboard amministrativa, oltre ad esporre parte dei dati all'esterno.
-    	
-    	\item[Interfaccia richiesta - Dati su votazioni, distribuzioni e sistema] \hfill \\
-		Vengono richiesti dal database sulle votazioni, distribuzioni territoriali dei votanti e dati generici di sistema.
-    	
-    	\item[Interfaccia fornita - Dati sulle distribuzioni territoriali] \hfill \\
-    	Vengono esposti esternamente dati in forma raffinata riguardanti le distribuzioni territoriali degli utenti del sistema.
-    	
-    	\item[Interfaccia fornita - Dati sulle votazioni] \hfill \\
-		Vengono esposti esternamente dati in forma raffinata riguardanti le votazioni.
+		\item[Interfaccia richiesta - Registrazione voto] \hfill \\
+        Registra il voto espresso da un cittadino.
 
-		\item[Interfaccia fornita - Dati sulle votazioni] \hfill \\
-		Vengono forniti all'amministrazione dati in forma raffinata riguardanti l'intero sistema.
+		\item[Interfaccia richiesta - Registrazione nuova proposta] \hfill \\
+        Riceve i dettagli di una nuova proposta da salvare nel database.
 
+		\item[Interfaccia fornita - Dati utente] \hfill \\
+        Fornisce le credenziali al componente Gestione Login (\ref{cmp:gestione-login}) per poter validare il tentativo di accesso ad un account.
+		
+		\item[Interfaccia fornita - Dati utente] \hfill \\
+        Fornisce i dati personali correnti al componente Gestione Modifica Dati Personali (\ref{cmp:modifica-dati-personali}) per poterli mostrare all'utente.
+
+        \item[Interfaccia fornita - Proposte] \hfill \\
+        Fornisce l'elenco e i dettagli delle proposte ai componenti di visualizzazione e gestione.
+        
+        \item[Interfaccia fornita - Permessi di notifica] \hfill \\
+        Fornisce i permessi di notifica concesse dall'utente.
+        
+        \item[Interfaccia fornita - Dati votazioni, distribuzioni e sistema] \hfill \\
+        Fornisce i dati grezzi per l'analisi statistica.
     \end{description}
-    
-             \subsection{Componente}
+
+     \subsection{Gestione Creazione Proposta} \label{cmp:gestione-creazione-proposta}
     \begin{description}
-    	\item[Descrizione] \hfill \\
-    	desc
-    	
-    	\item[Interfaccia richiesta - nome] \hfill \\
-    	int
-    	
-    	\item[Interfaccia fornita - nome] \hfill \\
-    	int
+        \item[Descrizione] \hfill \\
+        Gestisce il wizard di creazione di una nuova proposta da parte del cittadino, validando i campi inseriti.
+        
+        \item[Interfaccia richiesta - Campi descrittivi] \hfill \\
+        Input dell'utente comprendente titolo, descrizione e budget.
+        
+        \item[Interfaccia richiesta - Categoria] \hfill \\
+        Input dell'utente per la classificazione della proposta.
+        
+        \item[Interfaccia fornita - Registrazione nuova proposta] \hfill \\
+        Invia la proposta completa e validata al Database per il salvataggio.
     \end{description}
-    
-}
+
+     \subsection{Gestione Proposte Pubbliche} \label{cmp:gestione-proposte-pubbliche}
+    \begin{description}
+        \item[Descrizione] \hfill \\
+        Gestisce la logica delle proposte visibili, inclusi i cambiamenti di stato e l'aggiunta ai preferiti.
+        
+        \item[Interfaccia richiesta - Proposte] \hfill \\
+        Recupera le proposte dal database.
+        
+        \item[Interfaccia fornita - Elenco proposte] \hfill \\
+        Fornisce la lista delle proposte al componente di Visualizzazione Elementi Pubblici (\ref{cmp:visualizzazione-elementi-pubblici}).
+        
+        \item[Interfaccia fornita - Nuovo preferito] \hfill \\
+        Segnala al componente Gestione Preferiti (\ref{cmp:gestione-preferiti}) l'azione di follow da parte di un utente.
+        
+        \item[Interfaccia richiesta - Lista proposte] \hfill \\
+        Riceve dal componente di Gestione Moderazione (\ref{cmp:gestione-moderazione}) le limitazioni da applicare alla visibilità delle proposte.
+    \end{description}
+
+     \subsection{Dashboard Amministrativa} \label{cmp:dashboard-amministrativa}
+    \begin{description}
+        \item[Descrizione] \hfill \\
+        Pannello di controllo riservato agli amministratori per la gestione del sistema, dei sondaggi e degli utenti speciali.
+        
+        \item[Interfaccia richiesta - Report dati sul sistema] \hfill \\
+        Riceve statistiche ed analisi dal componente Gestione Dati (\ref{cmp:gestione-dati}).
+        
+        \item[Interfaccia richiesta - Risultati sul sondaggio] \hfill \\
+        Visualizza l'esito dei sondaggi conclusi o in corso.
+        
+        \item[Interfaccia fornita - Inizializzazione sondaggio] \hfill \\
+        Permette la creazione e l'avvio di nuovi sondaggi.
+        
+        \item[Interfaccia fornita - Modifiche stato sondaggio] \hfill \\
+        Permette di modificare o chiudere un sondaggio.
+        
+        \item[Interfaccia fornita - Modifica stato proposta] \hfill \\
+        Invia comandi per cambiare lo stato di avanzamento delle proposte cittadine.
+        
+        \item[Interfaccia fornita - Credenziali utente moderatore o associazione] \hfill \\
+        Genera e invia le credenziali per nuovi account amministrativi/moderatori via email.
+        
+        \item[Interfaccia fornita - Dati account moderatore o associazione] \hfill \\
+        Gestisce la creazione dei profili per lo staff nel database.
+    \end{description}
+
+     \subsection{Gestione Modifiche a Proposta} \label{cmp:gestione-modifiche-a-proposta}
+    \begin{description}
+        \item[Descrizione] \hfill \\
+        Gestisce il flusso di modifica di una proposta esistente, che richiede passaggi di approvazione.
+        
+        \item[Interfaccia richiesta - Proposta modificata] \hfill \\
+        Riceve i nuovi dati della proposta modificata.
+        
+        \item[Interfaccia riciesta - Elenco modifiche] \hfill \\
+        Riceve lo storico delle modifiche o le modifiche pendenti.
+        
+        \item[Interfaccia fornita - Registrazione modifiche] \hfill \\
+        Salva le modifiche nel database.
+        
+        \item[Interfaccia richiesta - Accettazione modifiche] \hfill \\
+        Riceve l'autorizzazione alle modifiche dal componente di Visualizzazione Elementi Pubblici (\ref{cmp:visualizzazione-elementi-pubblici}).
+    \end{description}
+
+     \subsection{Gestione Moderazione} \label{cmp:gestione-moderazione}
+    \begin{description}
+        \item[Descrizione] \hfill \\
+        Componente dedicato alla verifica dei contenuti.
+
+        \item[Interfaccia fornita - Lista proposte] \hfill \\
+        Fornisce le proposte moderate/validate pronte per la visualizzazione pubblica.
+    \end{description}
+
+     \subsection{Gestione Votazioni} \label{cmp:gestione-votazioni}
+    \begin{description}
+        \item[Descrizione] \hfill \\
+        Gestisce l'atto del voto garantendo che sia univoco e proveniente da utenti autenticati.
+        
+        \item[Interfaccia richiesta - Voto a proposta] \hfill \\
+        Riceve l'input di voto su una proposta cittadina.
+        
+        \item[Interfaccia richiesta - Voto a sondaggio] \hfill \\
+        Riceve la risposta dell'utente a un sondaggio.
+        
+        \item[Interfaccia richiesta - Autenticazione] \hfill \\
+        Verifica con Gestione Login (\ref{cmp:gestione-login}) che l'utente sia loggato prima di accettare il voto.
+        
+        \item[Interfaccia fornita - Registrazione voto] \hfill \\
+        Invia il voto validato al database.
+    \end{description}
+
+     \subsection{Visualizzazione Elementi Pubblici} \label{cmp:visualizzazione-elementi-pubblici}
+    \begin{description}
+        \item[Descrizione] \hfill \\
+        È il componente principale di frontend che aggrega e mostra proposte e sondaggi all'utente, gestendo filtri e interazioni.
+
+		\item[Interfaccia richiesta - Elenco sondaggi] \hfill \\
+        Riceve dal componente Sondaggi Pubblici (\ref{cmp:sondaggi-pubblici}) la lista dei sondaggi pubblici.
+        
+        \item[Interfaccia richiesta - Criteri di ordinamento] \hfill \\
+        Input dell'utente per organizzare la vista come, ad esempio, ordinare per più votati o più recenti.
+
+		\item[Interfaccia richiesta - Criteri di filtraggio] \hfill \\
+        Input dell'utente per filtrare la vista come, ad esempio, filtrare per categoria o per stato o ancora per autore.
+		
+		\item[Interfaccia richiesta - Elenco proposte] \hfill \\
+        Colleziona l'elenco delle proposte pubbliche.
+		
+        \item[Interfaccia fornita - Proposte pubbliche] \hfill \\
+        Fornisce le proposte visualizzabili da chiunque.
+        
+        \item[Interfaccia fornita - Accettazione modifiche] \hfill \\
+        Fornisce l'approvazione alle modifiche apportate al componente Gestione Modifiche a Proposta (\ref{cmp:gestione-modifiche-a-proposta}).
+        
+        \item[Interfaccia fornita - Proposta modificata] \hfill \\
+        Permette all'autore di inviare modifiche alla propria proposta.
+
+        \item[Interfaccia fornita - Sondaggi pubblici] \hfill \\
+        Fornisce i sondaggi visionabili dal pubblico.
+
+		\item[Interfaccia fornita - Elenco modifiche] \hfill \\
+        Fornisce lo storico delle modifiche apportate ad una proposta al componente Gestione Modifiche a Proposta (\ref{cmp:gestione-modifiche-a-proposta}).
+
+		\item[Interfaccia fornita - Voto a proposta] \hfill \\
+        Fornisce al componente Gestione Votazioni (\ref{cmp:gestione-votazioni}) il voto ad una proposta espresso da un cittadino.
+
+		\item[Interfaccia fornita - Voto a sondaggio] \hfill \\
+        Fornisce al componente Gestione Votazioni (\ref{cmp:gestione-votazioni}) le risposte ad un sondaggio espressa da un cittadino.
+		
+    \end{description}
+
+     \subsection{Sondaggi Pubblici} \label{cmp:sondaggi-pubblici}
+    \begin{description}
+        \item[Descrizione] \hfill \\
+        Gestisce il ciclo di vita dei sondaggi istituzionali (creazione, svolgimento, chiusura).
+        
+        \item[Interfaccia richiesta - Inizializzazione sondaggio] \hfill \\
+        Riceve il comando di creazione dalla Dashboard Amministrativa (\ref{cmp:dashboard-amministrativa}).
+        
+        \item[Interfaccia richiesta - Modifiche stato sondaggio] \hfill \\
+        Riceve comandi di modifica di un sondaggio dalla Dashboard Amministrativa (\ref{cmp:dashboard-amministrativa}).
+        
+        \item[Interfaccia richiesta - Elenco sondaggi] \hfill \\
+        Recupera i dati dei sondaggi dal Database.
+        
+        \item[Interfaccia fornita - Registrazione sondaggio] \hfill \\
+        Invia il nuovo sondaggio da salvare al database.
+        
+        \item[Interfaccia fornita - Risultati sul sondaggio] \hfill \\
+        Calcola e fornisce i risultati del sondaggio all'amministrazione.
+        
+        \item[Interfaccia fornita - Elenco Sondaggi] \hfill \\
+        Espone i sondaggi al componente Visualizzazione Elementi Pubblici (\ref{cmp:visualizzazione-elementi-pubblici}).
+    \end{description}
+
+    \subsection{Gestione Modifica Dati Personali} \label{cmp:modifica-dati-personali}
+	\begin{description}
+		\item[Descrizione] \hfill \\
+        Il componente si occupa di ricevere e comunicare le modifiche ai dati personali a vari componenti.
+
+		\item[Interfaccia fornita - Modifiche ai dati] \hfill \\
+        Il componente comunica al database che i dati personali sono stati cambiati.
+
+		\item[Interfaccia fornita - Modifiche ai dati personali] \hfill \\
+        Il componente comunica al componente Gestione Invio Email (\ref{cmp:gestione-invio-email}) che è avvenuto un cambiamento ai propri dati personali.
+
+		\item[Interfaccia richiesta - Dati utente] \hfill \\
+        Il componente richiede i dati utente correnti al database.
+	\end{description}
+
+\end{cmpscope}
 
 \section{Diagramma dei componenti}
-Si riporta in seguito il diagramma contenente tutti i componenti del sistema \emph{Trento Decide} e delle loro interconnessioni.
+Si riporta in seguito il diagramma contenente tutti i componenti del sistema \emph{Trento Decide} e delle loro interconnessioni descritte in precedenza.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{img/componenti/componenti.png}
+    \caption{Diagramma dei componenti del sistema Trento Decide}
+    \label{fig:diagramma-componenti}
+\end{figure}
